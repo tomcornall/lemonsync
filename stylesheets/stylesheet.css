@@ -57,10 +57,10 @@ body {
 }
 
 a {
-  color: #d5000d;
+  color: #008cba;
 }
 a:hover {
-  color: #c5000c;
+  color: #006687;
 }
 
 header {
@@ -74,6 +74,17 @@ header h1 {
   font-size: 48px;
   color: #303030;
   line-height: 1.2;
+}
+
+header img {
+  vertical-align: middle;
+}
+
+h1.title {
+    font-family: 'Helvetica Neue', Helvetica, Arial, serif; font-weight: 900;
+    display: inline;
+    font-size: 36px;
+    vertical-align: middle;
 }
 
 header h2 {
