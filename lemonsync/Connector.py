@@ -44,7 +44,7 @@ class Connector:
 		self.protocol = "https://"
 
 	# Handle the connection to the LemonStand API
-	def get_identity (self, store_host, api_access):
+	def get_identity (self, api_host, api_access):
 
 		# This is the API endpoint that will give us access to our s3 bucket in AWS
 		path = '/api/v2/identity/s3'
@@ -58,7 +58,7 @@ class Connector:
 
 		try:
 			# The connection will fail if the configuation values are not set correctly
-			r = requests.post(self.protocol + store_host + path, headers=headers, allow_redirects=False, verify=True)
+			r = requests.post(api_host + path, headers=headers, allow_redirects=False, verify=False)
 		except:
 			sys.exit(Fore.RED + "Could not make connection to LemonStand!" + Style.RESET_ALL)
 
@@ -70,16 +70,23 @@ class Connector:
 		return response
 
 	# Handles the connection to s3
-	def s3_connection (self, identity):
+	def s3_connection (self, identity, user_id):
 		connection = {}
 
+		for theme_info in identity['data']['themes']:
+			if theme_info['user_id'] == int(user_id):
+				theme = theme_info['value']
+
 		try:
-			connection["conn"] = boto.s3.connection.S3Connection(aws_access_key_id=identity['key'], aws_secret_access_key=identity['secret'], security_token=identity['token']) 
-			connection["bucket"] = connection["conn"].get_bucket(identity['bucket'], validate = False)
-			connection["store"] = identity['store']
-			connection["theme"] = identity['theme']
-			connection["bucket_name"] = identity['bucket']
+			connection["conn"] = boto.s3.connection.S3Connection(aws_access_key_id=identity['data']['key'], aws_secret_access_key=identity['data']['secret'], security_token=identity['data']['token']) 
+			connection["bucket"] = connection["conn"].get_bucket(identity['data']['bucket'], validate = False)
+			connection["store"] = identity['data']['store']
+			connection["theme"] = theme
+			connection["bucket_name"] = identity['data']['bucket']
 		except:
 			sys.exit(Fore.RED + 'Could not make connection to s3!' + Style.RESET_ALL)
+
+		if not connection["theme"]:
+			sys.exit(Fore.RED + 'Editing theme does not exist!' + Style.RESET_ALL)
 
 		return connection
