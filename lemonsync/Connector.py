@@ -41,7 +41,7 @@ class Connector:
 	def __init__ (self):
 		self.connection = {}
 		self.identity = None
-		self.protocol = "http://"
+		self.protocol = "https://"
 
 	# Handle the connection to the LemonStand API
 	def get_identity (self, store_host, api_access):
